@@ -3,35 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Undangan Pernikahan</title>
+    <title>Undangan Pernikahan Dhigna & Wildan</title>
     <style>
-        html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; }
-        #cover-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; }
-        .img-cover { width: 100%; height: 100%; object-fit: cover; }
-        .guest-container { position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%); text-align: center; width: 85%; pointer-events: none; }
-        #guest-name { font-size: 1.8rem; color: #8a7355; font-weight: bold; font-family: serif; }
-        .invisible-btn { position: absolute; top: 72%; left: 50%; transform: translate(-50%, -50%); width: 220px; height: 55px; background: rgba(0,0,0,0); border: none; cursor: pointer; }
+        html, body { 
+            margin: 0; 
+            padding: 0; 
+            height: 100%; 
+            width: 100%; 
+            overflow: hidden; 
+            font-family: sans-serif;
+            background-color: #ffffff;
+        }
+
+        /* LAYER COVER DEPAN */
+        #cover-layer { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            z-index: 10;
+        }
+
+        .img-cover { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+        }
+
+        /* CONTAINER NAMA TAMU */
+        .guest-container { 
+            position: absolute; 
+            top: 52%; /* Sesuaikan tinggi nama tamu (dalam persen) */
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            text-align: center; 
+            width: 85%; 
+            pointer-events: none; 
+        }
+
+        #guest-name { 
+            font-size: 1.8rem; 
+            color: #8a7355; /* Warna teks nama */
+            font-weight: bold; 
+            font-family: serif; 
+        }
+
+        /* TOMBOL GHAIB PENUTUP TOMBOL CANVA */
+        .invisible-btn { 
+            position: absolute; 
+            top: 72%; /* Sesuaikan tinggi tombol (dalam persen) */
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            width: 220px; 
+            height: 55px; 
+            background: rgba(0,0,0,0); /* Transparan total */
+            border: none; 
+            cursor: pointer; 
+        }
     </style>
 </head>
 <body>
 
     <div id="cover-layer">
+        <!-- Teks Nama Tamu Melayang -->
         <div class="guest-container">
             <h1 id="guest-name">Bapak/Ibu/Saudara/i</h1>
         </div>
-        <!-- Tombol ini akan langsung melempar tamu ke web Canva asli -->
-        <button onclick="bukaCanvaAsli()" class="invisible-btn"></button>
-        <img src="cover.jpg" class="img-cover" alt="Cover">
+        
+        <!-- Tombol Transparan -->
+        <button onclick="bukaUndanganCanva()" class="invisible-btn"></button>
+        
+        <!-- File gambar cover depan Anda yang di-upload di GitHub -->
+        <img src="cover.jpg" class="img-cover" alt="Cover Depan">
     </div>
 
     <script>
+        // 1. Ambil nama tamu dari URL (?to=Nama+Tamu)
         const urlParams = new URLSearchParams(window.location.search);
         const name = urlParams.get('to');
-        if (name) { document.getElementById('guest-name').innerText = decodeURIComponent(name.replace(/\+/g, ' ')); }
+        if (name) { 
+            document.getElementById('guest-name').innerText = decodeURIComponent(name.replace(/\+/g, ' ')); 
+        }
 
-        function bukaCanvaAsli() {
-            // Membuka website Canva asli di tab baru tanpa hambatan iframe
-            window.open("https://osmaneter.my.canva.site/dhigna-wildan", "_blank");
+        // 2. Fungsi pindah halaman langsung di tab yang sama
+        function bukaUndanganCanva() {
+            window.location.href = "https://osmaneter.my.canva.site/dhigna-wildan";
         }
     </script>
 </body>
