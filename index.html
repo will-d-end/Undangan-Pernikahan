@@ -15,43 +15,44 @@
             background-color: #ffffff; 
         }
 
-        /* CONTAINER UTAMA COVER */
+        /* 1. LAYER COVER DEPAN */
         #cover-layer { 
-            position: relative; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
             width: 100%; 
             height: 100%; 
+            z-index: 10;
+            background-color: white;
+            /* Efek pudar sinematik saat dibuka */
+            transition: opacity 1s ease, visibility 1s;
         }
 
-        .img-cover { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
-            display: block; 
-        }
+        .img-cover { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-        /* SUSUNAN TEKS NAMA TAMU (RESPONSIF HP) */
+        /* TEKS NAMA TAMU */
         .guest-container { 
             position: absolute; 
-            top: 55%; /* Ubah persentase ini untuk menaikkan/menurunkan teks sapaan */
+            top: 55%; /* Geser naik/turun teks di sini */
             left: 50%; 
             transform: translate(-50%, -50%); 
             text-align: center; 
             width: 85%; 
             pointer-events: none; 
-            z-index: 2;
+            z-index: 12;
         }
 
         .greeting-text { font-size: 4vw; color: #555555; margin: 0; font-style: italic; }
         .label-text { font-size: 5vw; color: #555555; margin: 0; font-weight: bold; }
         #guest-name { font-size: 6vw; color: #8a7355; margin: 5px 0 0 0; font-weight: bold; font-family: serif; }
 
-        /* TOMBOL BUKA UNDANGAN VINTAGE/MODERN */
+        /* TOMBOL BUKA UNDANGAN */
         .visible-btn { 
             position: absolute; 
-            top: 75%; /* Ubah persentase ini untuk menaikkan/menurunkan posisi tombol */
+            top: 75%; /* Geser naik/turun tombol di sini */
             left: 50%; 
             transform: translate(-50%, -50%); 
-            z-index: 3;
+            z-index: 13;
             padding: 12px 35px;
             font-size: 1.1rem;
             color: #ffffff;
@@ -61,11 +62,29 @@
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             font-weight: bold;
-            transition: all 0.2s ease;
         }
-        
-        .visible-btn:active {
-            transform: translate(-50%, -50%) scale(0.95);
+
+        /* 2. LAYER ISI UNDANGAN (CANVA INTERAKTIF BYPASS) */
+        #content-layer { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            z-index: 1; 
+        }
+
+        /* Menggunakan Object Element untuk menembus pemblokiran iframe Canva */
+        .canva-object { 
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+        }
+
+        .fade-out { 
+            opacity: 0; 
+            visibility: hidden; 
+            pointer-events: none; 
         }
 
         @media (min-width: 768px) {
@@ -85,38 +104,37 @@
             <h1 id="guest-name">Tamu Undangan</h1>
         </div>
         
-        <!-- Mengeksekusi perpindahan halaman di jendela yang sama -->
-        <button onclick="bukaUndanganSamaPage()" class="visible-btn">Buka Undangan</button>
-        
+        <button onclick="bukaUndangan()" class="visible-btn">Buka Undangan</button>
         <img src="cover.png" class="img-cover" alt="Cover Depan">
     </div>
 
-    <!-- AUDIO UNTUK SEMENTARA DI HALAMAN COVER -->
+    <div id="content-layer">
+        <object data="https://osmaneter.my.canva.site/dhigna-wildan" class="canva-object"></object>
+    </div>
+
     <audio id="bg-music" loop>
         <source src="music.mpeg" type="audio/mpeg">
     </audio>
 
     <script>
-        // 1. Membaca nama tamu dari parameter URL WhatsApp
+        // 1. Ambil Nama Tamu dari parameter URL
         const urlParams = new URLSearchParams(window.location.search);
         const name = urlParams.get('to');
         if (name) { 
             document.getElementById('guest-name').innerText = decodeURIComponent(name.replace(/\+/g, ' ')); 
         }
 
-        // 2. Putar musik sesaat di GitHub lalu pindah ke halaman Canva asli
-        function bukaUndanganSamaPage() {
+        // 2. Eksekusi Tombol Buka Undangan
+        function bukaUndangan() {
             var audio = document.getElementById("bg-music");
             
-            // Putar audio sesaat sebelum perpindahan agar tidak kaku
+            // Mengaktifkan music.mpeg di GitHub secara instan berkat klik tombol dari tamu
             audio.play().catch(function(error) {
-                console.log("Audio diputar.");
+                console.log("Izin audio otomatis aktif.");
             });
 
-            // Redirect di tab yang sama tanpa membuka jendela baru
-            setTimeout(function() {
-                window.location.href = "https://osmaneter.my.canva.site/dhigna-wildan";
-            }, 300); // Menunda 0.3 detik agar transisi browser terasa mulus
+            // Membuka lapisan cover depan, memperlihatkan Canva interaktif yang sudah stand-by di bawahnya
+            document.getElementById("cover-layer").classList.add("fade-out");
         }
     </script>
 </body>
