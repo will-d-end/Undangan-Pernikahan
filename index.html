@@ -3,98 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Undangan Pernikahan Dhigna & Wildan</title>
+    <title>Undangan Pernikahan</title>
     <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-            font-family: 'Arial', sans-serif;
-            background-color: #ffffff;
-        }
-
-        /* SLIDE 1: LAYER COVER (CANVA DEPAN) */
-        #cover-layer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10;
-            transition: opacity 1.2s ease, visibility 1.2s;
-        }
-
-        .iframe-cover {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        /* ELEMEN NAMA TAMU (Melayang di atas Canva Cover) */
-        .guest-container {
-            position: absolute;
-            /* Atur persentase di bawah ini untuk menggeser posisi NAMA TAMU */
-            top: 52%; 
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 12;
-            text-align: center;
-            width: 85%;
-            pointer-events: none; /* Supaya klik tidak terhalang */
-        }
-
-        #guest-name {
-            font-size: 1.8rem;
-            color: #8a7355; /* Warna teks nama (bisa diganti sesuai tema Canva) */
-            font-weight: bold;
-            margin: 0;
-            font-family: 'Times New Roman', Times, serif;
-            font-style: italic;
-        }
-
-        /* TOMBOL GHAIB (Melayang pas di atas tombol "Buka Undangan" Canva) */
-        .invisible-btn {
-            position: absolute;
-            /* Atur persentase di bawah ini untuk menggeser posisi TOMBOL */
-            top: 72%; 
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 13;
-            width: 220px;  /* Lebar area klik tombol ghaib */
-            height: 55px;  /* Tinggi area klik tombol ghaib */
-            
-            /* TIPS: Ubah 'rgba(255, 0, 0, 0)' menjadi 'rgba(255, 0, 0, 0.4)' saat testing di VS Code */
-            background: rgba(255, 0, 0, 0); 
-            
-            border: none;
-            cursor: pointer;
-            border-radius: 30px;
-        }
-
-        /* SLIDE 2: LAYER ISI UNDANGAN (CANVA UTAMA) */
-        #content-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-
-        .iframe-content {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        /* Efek Transisi Memudar */
-        .fade-out {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
+        html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; }
+        #cover-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; }
+        .img-cover { width: 100%; height: 100%; object-fit: cover; }
+        .guest-container { position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%); text-align: center; width: 85%; pointer-events: none; }
+        #guest-name { font-size: 1.8rem; color: #8a7355; font-weight: bold; font-family: serif; }
+        .invisible-btn { position: absolute; top: 72%; left: 50%; transform: translate(-50%, -50%); width: 220px; height: 55px; background: rgba(0,0,0,0); border: none; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -103,37 +19,19 @@
         <div class="guest-container">
             <h1 id="guest-name">Bapak/Ibu/Saudara/i</h1>
         </div>
-        
-        <button onclick="bukaUndangan()" class="invisible-btn"></button>
-
-        <iframe src="https://www.canva.com/design/DAHMb8qeh-A/4fOTbQzaZxTZm-SsVu8jcQ/view" class="iframe-cover"></iframe>
+        <!-- Tombol ini akan langsung melempar tamu ke web Canva asli -->
+        <button onclick="bukaCanvaAsli()" class="invisible-btn"></button>
+        <img src="cover.jpg" class="img-cover" alt="Cover">
     </div>
-
-    <div id="content-layer">
-        <iframe src="https://www.canva.com/design/DAHMDFIqCI8/Uw-vAFBlM8KZ7c5p14WyaA/view" class="iframe-content" allow="autoplay"></iframe>
-    </div>
-
-    <audio id="wedding-music" src="musik.mpeg" loop></audio>
 
     <script>
-        // 1. Fungsi Mengambil & Menampilkan Nama Tamu secara Dinamis dari URL (?to=Nama)
         const urlParams = new URLSearchParams(window.location.search);
         const name = urlParams.get('to');
-        if (name) {
-            document.getElementById('guest-name').innerText = decodeURIComponent(name.replace(/\+/g, ' '));
-        }
+        if (name) { document.getElementById('guest-name').innerText = decodeURIComponent(name.replace(/\+/g, ' ')); }
 
-        // 2. Fungsi Transisi Seamless saat Tombol Diklik
-        function bukaUndangan() {
-            var audio = document.getElementById("wedding-music");
-            
-            // Putar musik mp3
-            audio.play().catch(function(error) {
-                console.log("Autoplay audio memerlukan interaksi fisik terlebih dahulu.");
-            });
-
-            // Hilangkan lapisan cover depan dengan transisi fade-out lembut
-            document.getElementById("cover-layer").classList.add("fade-out");
+        function bukaCanvaAsli() {
+            // Membuka website Canva asli di tab baru tanpa hambatan iframe
+            window.open("https://osmaneter.my.canva.site/dhigna-wildan", "_blank");
         }
     </script>
 </body>
