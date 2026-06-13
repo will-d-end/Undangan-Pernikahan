@@ -5,35 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Undangan Pernikahan Dhigna & Wildan</title>
     <style>
-        html, body { 
-            margin: 0; 
-            padding: 0; 
-            height: 100%; 
-            width: 100%; 
-            overflow: hidden; 
-            font-family: sans-serif;
-            background-color: #ffffff;
-        }
+        html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: 'serif'; background-color: #ffffff; }
 
-        /* CONTAINER UTAMA (FLUID & DYNAMIC) */
-        #cover-layer { 
-            position: relative; 
-            width: 100%; 
-            height: 100%; 
-        }
+        #cover-layer { position: relative; width: 100%; height: 100%; }
+        .img-cover { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-        /* GAMBAR BACKGROUND: Lebar di PC, Menyesuaikan di HP */
-        .img-cover { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; /* Memotong tepi gambar secara cerdas agar layar selalu penuh tanpa gepeng */
-            display: block;
-        }
-
-        /* NAMA TAMU DINAMIS */
+        /* CONTAINER NAMA & SAPAAN */
         .guest-container { 
             position: absolute; 
-            top: 72%; /* Atur naik/turun posisi nama tamu di sini */
+            top: 55%; /* Geser naik/turun di sini */
             left: 50%; 
             transform: translate(-50%, -50%); 
             text-align: center; 
@@ -42,73 +22,58 @@
             z-index: 2;
         }
 
-        #guest-name { 
-            /* Menggunakan satuan vw (Viewport Width) agar ukuran teks mengecil di HP dan membesar di PC */
-            font-size: 6vw; 
-            color: #8a7355; 
-            font-weight: bold; 
-            font-family: serif; 
-            margin: 0;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
-        }
+        .greeting-text { font-size: 4vw; color: #555; margin: 0; font-style: italic; }
+        .label-text { font-size: 5vw; color: #555; margin: 0; font-weight: bold; }
+        #guest-name { font-size: 6vw; color: #8a7355; margin: 5px 0 0 0; font-weight: bold; }
 
-        /* TOMBOL GHAIB DINAMIS */
-        .invisible-btn { 
+        /* TOMBOL BUKA UNDANGAN (Visible) */
+        .visible-btn { 
             position: absolute; 
-            top: 90%; /* Atur naik/turun posisi tombol di sini */
+            top: 75%; /* Geser naik/turun di sini */
             left: 50%; 
             transform: translate(-50%, -50%); 
-            
-            /* Menggunakan satuan % dan vw agar luas area klik melebar proporsional mengikuti layar */
-            width: 55vw;  
-            height: 7vh;  
             z-index: 3;
-            cursor: pointer;
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            color: #ffffff;
+            background-color: #8a7355; /* Warna tema (Emas/Coklat) */
             border: none;
-            
-            /* TIPS KALIBRASI: Ubah angka 0 terakhir menjadi 0.4 untuk melihat posisi tombol saat uji coba */
-            background: rgba(255, 0, 0, 0.4); 
-            border-radius: 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
         }
+        .visible-btn:active { transform: translate(-50%, -50%) scale(0.95); }
 
-        /* MEDIA QUERY: Optimasi khusus saat dibuka di layar lebar (PC / Laptop) */
         @media (min-width: 768px) {
-            #guest-name {
-                font-size: 2.5rem; /* Mengunci ukuran font di PC agar tidak terlalu raksasa */
-            }
-            .invisible-btn {
-                width: 240px; /* Mengunci lebar tombol di PC agar tetap proporsional */
-                height: 55px; /* Mengunci tinggi tombol di PC */
-            }
+            .greeting-text { font-size: 1.2rem; }
+            .label-text { font-size: 1.5rem; }
+            #guest-name { font-size: 2rem; }
+            .visible-btn { padding: 15px 40px; font-size: 1.5rem; }
         }
     </style>
 </head>
 <body>
 
     <div id="cover-layer">
-        
-        <!-- Wadah Teks Nama Tamu -->
         <div class="guest-container">
-            <h1 id="guest-name">Bapak/Ibu/Saudara/i</h1>
+            <p class="greeting-text">Kepada Yth:</p>
+            <p class="label-text">Bapak/Ibu/Saudara/i:</p>
+            <h1 id="guest-name">Tamu Undangan</h1>
         </div>
         
-        <!-- Tombol Transparan -->
-        <button onclick="bukaUndanganCanva()" class="invisible-btn"></button>
+        <button onclick="bukaUndanganCanva()" class="visible-btn">Buka Undangan</button>
         
-        <!-- Gambar Cover Depan -->
         <img src="cover.png" class="img-cover" alt="Cover Depan">
-        
     </div>
 
     <script>
-        // 1. Ambil nama dari URL (?to=Nama+Tamu)
         const urlParams = new URLSearchParams(window.location.search);
         const name = urlParams.get('to');
         if (name) { 
             document.getElementById('guest-name').innerText = decodeURIComponent(name.replace(/\+/g, ' ')); 
         }
 
-        // 2. Aksi tombol menuju link Canva isi langsung di tab yang sama
         function bukaUndanganCanva() {
             window.location.href = "https://osmaneter.my.canva.site/dhigna-wildan";
         }
