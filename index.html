@@ -5,88 +5,118 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Undangan Pernikahan Dhigna & Wildan</title>
     <style>
+        /* Mengondisikan base layer agar hitam/netral untuk frame luar HP jika dibuka di PC */
         html, body { 
             margin: 0; 
             padding: 0; 
             height: 100%; 
             width: 100%; 
-            overflow: hidden; 
+            background-color: #1a1a1a; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
             font-family: sans-serif;
+        }
+
+        /* WADAH UTAMA: Memaksa layout selalu seukuran rasio layar HP (Mobile View Only) */
+        .phone-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 500px; /* Batas lebar maksimal seukuran HP besar */
+            aspect-ratio: 9 / 16;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
             background-color: #ffffff;
+            overflow: hidden;
         }
 
-        /* LAYER COVER DEPAN */
-        #cover-layer { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            z-index: 10;
-        }
-
+        /* BACKGROUND COVER: Menyesuaikan skala penuh dalam wadah HP */
         .img-cover { 
             width: 100%; 
             height: 100%; 
             object-fit: cover; 
+            display: block;
         }
 
-        /* CONTAINER NAMA TAMU */
+        /* CONTAINER NAMA TAMU: Menggunakan koordinat % yang presisi */
         .guest-container { 
             position: absolute; 
-            top: 52%; /* Sesuaikan tinggi nama tamu (dalam persen) */
+            top: 52%; /* SESUAIKAN PERSENTASE INI UNTUK NAIK/TURUN NAMA TAMU */
             left: 50%; 
             transform: translate(-50%, -50%); 
             text-align: center; 
-            width: 85%; 
+            width: 80%; 
             pointer-events: none; 
+            z-index: 2;
         }
 
         #guest-name { 
-            font-size: 1.8rem; 
-            color: #8a7355; /* Warna teks nama */
+            font-size: 5.5vw; /* Menggunakan ukuran font responsif skala layar */
+            max-size: 26px;  /* Batas maksimal ukuran font agar tidak kebesaran di PC */
+            color: #8a7355;  /* Warna emas/cokelat teks nama */
             font-weight: bold; 
             font-family: serif; 
+            margin: 0;
+            text-shadow: 1px 1px 1px rgba(255,255,255,0.6);
         }
 
-        /* TOMBOL GHAIB PENUTUP TOMBOL CANVA */
+        /* TOMBOL GHAIB: Koordinat % stabil mengikuti posisi tombol gambar Canva */
         .invisible-btn { 
             position: absolute; 
-            top: 72%; /* Sesuaikan tinggi tombol (dalam persen) */
+            top: 72%; /* SESUAIKAN PERSENTASE INI UNTUK NAIK/TURUN TOMBOL */
             left: 50%; 
             transform: translate(-50%, -50%); 
-            width: 220px; 
-            height: 55px; 
-            background: rgba(0,0,0,0); /* Transparan total */
-            border: none; 
-            cursor: pointer; 
+            width: 50%;  /* Lebar tombol responsif (50% dari lebar layar HP) */
+            height: 6%;  /* Tinggi tombol responsif (6% dari tinggi layar HP) */
+            z-index: 3;
+            cursor: pointer;
+            border: none;
+            
+            /* TIPS UJI COBA: Ubah angka 0 terakhir menjadi 0.4 untuk melihat kotak tombol saat kalibrasi */
+            background: rgba(255, 0, 0, 0.4); 
+            border-radius: 30px;
+        }
+
+        /* Media query untuk tampilan layar monitor/laptop agar tetap rapi */
+        @media (min-width: 501px) {
+            .phone-wrapper {
+                height: 95vh; /* Menyisakan sedikit margin atas-bawah di layar desktop */
+                border-radius: 12px; /* Memberi efek rounded corner estetik di monitor PC */
+            }
+            #guest-name {
+                font-size: 24px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div id="cover-layer">
-        <!-- Teks Nama Tamu Melayang -->
+    <!-- Frame khusus ukuran HP -->
+    <div class="phone-wrapper">
+        
+        <!-- Elemen Teks Nama Tamu Dinamis -->
         <div class="guest-container">
             <h1 id="guest-name">Bapak/Ibu/Saudara/i</h1>
         </div>
         
-        <!-- Tombol Transparan -->
+        <!-- Tombol Transparan Klik Aktif -->
         <button onclick="bukaUndanganCanva()" class="invisible-btn"></button>
         
-        <!-- File gambar cover depan Anda yang di-upload di GitHub -->
-        <img src="cover.png" class="img-cover" alt="Cover Depan">
+        <!-- Gambar Cover Depan Anda -->
+        <img src="cover.jpg" class="img-cover" alt="Cover Depan">
+        
     </div>
 
     <script>
-        // 1. Ambil nama tamu dari URL (?to=Nama+Tamu)
+        // 1. Membaca parameter nama tamu dari url (?to=Nama+Tamu)
         const urlParams = new URLSearchParams(window.location.search);
         const name = urlParams.get('to');
         if (name) { 
             document.getElementById('guest-name').innerText = decodeURIComponent(name.replace(/\+/g, ' ')); 
         }
 
-        // 2. Fungsi pindah halaman langsung di tab yang sama
+        // 2. Fungsi redirect langsung di tab yang sama menuju Canva Utama
         function bukaUndanganCanva() {
             window.location.href = "https://osmaneter.my.canva.site/dhigna-wildan";
         }
