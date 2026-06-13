@@ -5,31 +5,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Undangan Pernikahan Dhigna & Wildan</title>
     <style>
-        html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: sans-serif; background-color: #ffffff; }
-
-        /* LAYER COVER DEPAN */
-        #cover-layer { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;
-            background-color: white; transition: opacity 1s ease, visibility 1s;
+        html, body { 
+            margin: 0; 
+            padding: 0; 
+            height: 100%; 
+            width: 100%; 
+            overflow: hidden; 
+            font-family: sans-serif; 
+            background-color: #ffffff; 
         }
-        .img-cover { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-        .guest-container { position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%); text-align: center; width: 85%; z-index: 12; pointer-events: none; }
-        .greeting-text { font-size: 4vw; color: #555; margin: 0; font-style: italic; }
-        .label-text { font-size: 5vw; color: #555; margin: 0; font-weight: bold; }
+        /* CONTAINER UTAMA COVER */
+        #cover-layer { 
+            position: relative; 
+            width: 100%; 
+            height: 100%; 
+        }
+
+        .img-cover { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            display: block; 
+        }
+
+        /* SUSUNAN TEKS NAMA TAMU (RESPONSIF HP) */
+        .guest-container { 
+            position: absolute; 
+            top: 55%; /* Ubah persentase ini untuk menaikkan/menurunkan teks sapaan */
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            text-align: center; 
+            width: 85%; 
+            pointer-events: none; 
+            z-index: 2;
+        }
+
+        .greeting-text { font-size: 4vw; color: #555555; margin: 0; font-style: italic; }
+        .label-text { font-size: 5vw; color: #555555; margin: 0; font-weight: bold; }
         #guest-name { font-size: 6vw; color: #8a7355; margin: 5px 0 0 0; font-weight: bold; font-family: serif; }
 
+        /* TOMBOL BUKA UNDANGAN VINTAGE/MODERN */
         .visible-btn { 
-            position: absolute; top: 75%; left: 50%; transform: translate(-50%, -50%); z-index: 13;
-            padding: 12px 35px; font-size: 1.1rem; color: #ffffff; background-color: #8a7355; 
-            border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            position: absolute; 
+            top: 75%; /* Ubah persentase ini untuk menaikkan/menurunkan posisi tombol */
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            z-index: 3;
+            padding: 12px 35px;
+            font-size: 1.1rem;
+            color: #ffffff;
+            background-color: #8a7355; 
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+        
+        .visible-btn:active {
+            transform: translate(-50%, -50%) scale(0.95);
         }
 
-        /* LAYER ISI CANVA (EMBED LAYER) */
-        #content-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-        .iframe-content { width: 100%; height: 100%; border: none; }
-
-        .fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
+        @media (min-width: 768px) {
+            .greeting-text { font-size: 1.2rem; }
+            .label-text { font-size: 1.5rem; }
+            #guest-name { font-size: 2rem; }
+            .visible-btn { padding: 15px 45px; font-size: 1.3rem; }
+        }
     </style>
 </head>
 <body>
@@ -40,30 +84,39 @@
             <p class="label-text">Bapak/Ibu/Saudara/i:</p>
             <h1 id="guest-name">Tamu Undangan</h1>
         </div>
-        <button onclick="bukaUndangan()" class="visible-btn">Buka Undangan</button>
-        <img src="cover.png" class="img-cover" alt="Cover">
+        
+        <!-- Mengeksekusi perpindahan halaman di jendela yang sama -->
+        <button onclick="bukaUndanganSamaPage()" class="visible-btn">Buka Undangan</button>
+        
+        <img src="cover.png" class="img-cover" alt="Cover Depan">
     </div>
 
-    <div id="content-layer">
-        <iframe src="https://www.canva.com/design/play?src=https://osmaneter.my.canva.site/dhigna-wildan" class="iframe-content" allow="autoplay"></iframe>
-    </div>
-
+    <!-- AUDIO UNTUK SEMENTARA DI HALAMAN COVER -->
     <audio id="bg-music" loop>
         <source src="music.mpeg" type="audio/mpeg">
     </audio>
 
     <script>
+        // 1. Membaca nama tamu dari parameter URL WhatsApp
         const urlParams = new URLSearchParams(window.location.search);
         const name = urlParams.get('to');
-        if (name) { document.getElementById('guest-name').innerText = decodeURIComponent(name.replace(/\+/g, ' ')); }
+        if (name) { 
+            document.getElementById('guest-name').innerText = decodeURIComponent(name.replace(/\+/g, ' ')); 
+        }
 
-        function bukaUndangan() {
-            // Browser mengizinkan play karena mendeteksi klik pada tombol "Buka Undangan"
+        // 2. Putar musik sesaat di GitHub lalu pindah ke halaman Canva asli
+        function bukaUndanganSamaPage() {
             var audio = document.getElementById("bg-music");
-            audio.play().catch(function(error) { console.log("Autoplay block bypass gagal."); });
+            
+            // Putar audio sesaat sebelum perpindahan agar tidak kaku
+            audio.play().catch(function(error) {
+                console.log("Audio diputar.");
+            });
 
-            // Cover memudar, langsung menampilkan Canva yang sudah stand-by di bawahnya
-            document.getElementById("cover-layer").classList.add("fade-out");
+            // Redirect di tab yang sama tanpa membuka jendela baru
+            setTimeout(function() {
+                window.location.href = "https://osmaneter.my.canva.site/dhigna-wildan";
+            }, 300); // Menunda 0.3 detik agar transisi browser terasa mulus
         }
     </script>
 </body>
