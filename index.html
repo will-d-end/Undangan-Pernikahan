@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undangan Pernikahan</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* SLIDE 1: LAYER COVER (MENGGUNAKAN CANVA A) */
+        #cover-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            transition: opacity 1.2s ease, visibility 1.2s;
+        }
+
+        /* Iframe untuk Cover Canva A */
+        .iframe-cover {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* ELEMEN NAMA TAMU (Ditempel mengambang di atas Canva A) */
+        .guest-container {
+            position: absolute;
+            /* SESUAIKAN KOORDINAT DI BAWAH INI AGAR PAS DI AREA KOSONG DESAIN CANVA ANDA */
+            top: 55%; 
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 12;
+            text-align: center;
+            width: 85%;
+            pointer-events: none; /* Agar tidak mengganggu klik pada tombol di bawahnya */
+        }
+
+        #guest-name {
+            font-size: 2rem;
+            color: #8a7355; /* Sesuaikan warna dengan tema Canva Anda */
+            font-weight: bold;
+            margin: 0;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+        }
+
+        /* AREA TOMBOL TRANSPARAN (Ditempel persis di atas tombol desain Canva Anda) */
+        .invisible-btn {
+            position: absolute;
+            /* SESUAIKAN KOORDINAT & UKURAN AGAR PAS DI ATAS TOMBOL DESAIN CANVA ANDA */
+            top: 70%; 
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 13;
+            width: 200px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0); /* Transparan total */
+            border: none;
+            cursor: pointer;
+            border-radius: 25px;
+        }
+
+        /* SLIDE 2: LAYER ISI (CANVA B) */
+        #content-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .iframe-content {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Efek Transisi Menghilang */
+        .fade-out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="cover-layer">
+        <div class="guest-container">
+            <h1 id="guest-name">Bapak/Ibu/Saudara/i</h1>
+        </div>
+        
+        <button onclick="bukaUndangan()" class="invisible-btn"></button>
+
+        <iframe src="https://osmaneter.my.canva.site/cover-depan" class="iframe-cover"></iframe>
+    </div>
+
+    <div id="content-layer">
+        <iframe src="https://osmaneter.my.canva.site/dhigna-wildan" class="iframe-content" allow="autoplay"></iframe>
+    </div>
+
+    <audio id="wedding-music" src="musik.mpeg" loop></audio>
+
+    <script>
+        // 1. Ambil Parameter Nama Tamu
+        const urlParams = new URLSearchParams(window.location.search);
+        const name = urlParams.get('to');
+        if (name) {
+            document.getElementById('guest-name').innerText = decodeURIComponent(name.replace(/\+/g, ' '));
+        }
+
+        // 2. Fungsi Transisi Slide
+        function bukaUndangan() {
+            var audio = document.getElementById("wedding-music");
+            audio.play().catch(function(error) {
+                console.log("Musik diputar setelah interaksi.");
+            });
+
+            // Hilangkan Layer Cover dengan animasi fade-out
+            document.getElementById("cover-layer").classList.add("fade-out");
+        }
+    </script>
+</body>
+</html>
