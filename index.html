@@ -13,7 +13,7 @@
         /* CONTAINER NAMA & SAPAAN */
         .guest-container { 
             position: absolute; 
-            top: 55%; /* Geser naik/turun di sini */
+            top: 55%; 
             left: 50%; 
             transform: translate(-50%, -50%); 
             text-align: center; 
@@ -26,17 +26,17 @@
         .label-text { font-size: 5vw; color: #555; margin: 0; font-weight: bold; }
         #guest-name { font-size: 6vw; color: #8a7355; margin: 5px 0 0 0; font-weight: bold; }
 
-        /* TOMBOL BUKA UNDANGAN (Visible) */
+        /* TOMBOL BUKA UNDANGAN */
         .visible-btn { 
             position: absolute; 
-            top: 75%; /* Geser naik/turun di sini */
+            top: 75%; 
             left: 50%; 
             transform: translate(-50%, -50%); 
             z-index: 3;
             padding: 12px 30px;
             font-size: 1.2rem;
             color: #ffffff;
-            background-color: #8a7355; /* Warna tema (Emas/Coklat) */
+            background-color: #8a7355; 
             border: none;
             border-radius: 50px;
             cursor: pointer;
@@ -64,16 +64,32 @@
         
         <button onclick="bukaUndanganCanva()" class="visible-btn">Buka Undangan</button>
         
-        <img src="cover.png" class="img-cover" alt="Cover Depan">
+        <img src="cover.jpg" class="img-cover" alt="Cover Depan">
     </div>
 
+    <audio id="bg-music" loop>
+        <source src="music.mpeg" type="audio/mpeg">
+    </audio>
+
     <script>
+        // 1. Ambil nama dari URL
         const urlParams = new URLSearchParams(window.location.search);
         const name = urlParams.get('to');
         if (name) { 
             document.getElementById('guest-name').innerText = decodeURIComponent(name.replace(/\+/g, ' ')); 
         }
 
+        // 2. Putar musik otomatis saat layar disentuh pertama kali
+        window.addEventListener('click', function() {
+            var audio = document.getElementById("bg-music");
+            if (audio.paused) {
+                audio.play().catch(function(error) {
+                    console.log("Autoplay memerlukan interaksi pengguna.");
+                });
+            }
+        }, { once: true });
+
+        // 3. Fungsi pindah ke Canva
         function bukaUndanganCanva() {
             window.location.href = "https://osmaneter.my.canva.site/dhigna-wildan";
         }
