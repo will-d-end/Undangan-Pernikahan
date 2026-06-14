@@ -4,138 +4,195 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Undangan Pernikahan Dhigna & Wildan</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    
     <style>
+        /* BASE RESET & DYNAMIC LAYOUT */
         html, body { 
             margin: 0; 
             padding: 0; 
-            height: 100%; 
             width: 100%; 
-            overflow: hidden; 
-            font-family: sans-serif; 
-            background-color: #ffffff; 
+            height: 100%; 
+            background-color: #1a1a1a; 
+            font-family: 'serif', 'Segoe UI', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* CONTAINER DESKTOP FRIENDLY (FLUID DI HP, FIXED DI PC) */
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background-color: #fcfbf7;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
 
         /* 1. LAYER COVER DEPAN */
         #cover-layer { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            z-index: 10;
-            background-color: white;
-            /* Efek pudar sinematik saat dibuka */
-            transition: opacity 1s ease, visibility 1s;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100;
+            background-color: #ffffff; display: flex; justify-content: center; align-items: center;
+            transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1), opacity 1s ease;
         }
-
         .img-cover { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-        /* TEKS NAMA TAMU */
-        .guest-container { 
-            position: absolute; 
-            top: 55%; /* Geser naik/turun teks di sini */
-            left: 50%; 
-            transform: translate(-50%, -50%); 
-            text-align: center; 
-            width: 85%; 
-            pointer-events: none; 
-            z-index: 12;
+        /* TEKS NOMINAL TAMU DI ATAS SAMPUL */
+        .guest-box { 
+            position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%); 
+            text-align: center; width: 85%; z-index: 102; pointer-events: none;
+        }
+        .greeting-text { font-size: 1rem; color: #555555; margin: 0; font-style: italic; }
+        .label-text { font-size: 1.1rem; color: #555555; margin: 5px 0 0 0; font-weight: bold; }
+        #guest-name { font-size: 1.6rem; color: #8a7355; margin: 8px 0 0 0; font-weight: bold; text-shadow: 1px 1px 2px rgba(255,255,255,0.8); }
+
+        /* BUTTON BUKA UNDANGAN */
+        .btn-open { 
+            position: absolute; top: 75%; left: 50%; transform: translate(-50%, -50%); z-index: 103;
+            padding: 12px 38px; font-size: 1.1rem; color: #ffffff; background-color: #8a7355; 
+            border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); font-weight: bold;
+            transition: background 0.3s;
+        }
+        .btn-open:active { transform: translate(-50%, -50%) scale(0.95); }
+
+        /* EFEK SLIDE UP SAKRAL COVER */
+        .slide-out-up { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+
+        /* 2. LAYER MAIN CONTENT (VERTICAL SCROLL) */
+        #main-content {
+            width: 100%;
+            /* Menggunakan background-isi.png Canva sebagai corak latar belakang */
+            background: url('background-isi.png') repeat-y center top;
+            background-size: 100% auto;
+            padding-bottom: 50px;
         }
 
-        .greeting-text { font-size: 4vw; color: #555555; margin: 0; font-style: italic; }
-        .label-text { font-size: 5vw; color: #555555; margin: 0; font-weight: bold; }
-        #guest-name { font-size: 6vw; color: #8a7355; margin: 5px 0 0 0; font-weight: bold; font-family: serif; }
-
-        /* TOMBOL BUKA UNDANGAN */
-        .visible-btn { 
-            position: absolute; 
-            top: 75%; /* Geser naik/turun tombol di sini */
-            left: 50%; 
-            transform: translate(-50%, -50%); 
-            z-index: 13;
-            padding: 12px 35px;
-            font-size: 1.1rem;
-            color: #ffffff;
-            background-color: #8a7355; 
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            font-weight: bold;
+        .section-block {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+            padding: 40px 20px;
+            text-align: center;
         }
 
-        /* 2. LAYER ISI UNDANGAN (CANVA INTERAKTIF BYPASS) */
-        #content-layer { 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            z-index: 1; 
+        /* ATURAN POLA GAMBAR ELEMEN */
+        .content-image { width: 90%; height: auto; border-radius: 8px; margin: 20px 0; display: block; }
+        .decor-photo { width: 85%; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+
+        /* FORMS INTERAKTIF (RSVP & KOMENTAR) */
+        .interactive-card {
+            width: 90%; background-color: rgba(255, 255, 255, 0.9); 
+            border-radius: 15px; padding: 25px 20px; box-sizing: border-box;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-top: 30px;
+            border: 1px solid #eee1d0;
+        }
+        .section-title { color: #8a7355; font-size: 1.4rem; margin-top: 0; margin-bottom: 15px; font-weight: bold; }
+        
+        .btn-whatsapp {
+            display: inline-block; padding: 12px 25px; background-color: #25D366; color: white;
+            border-radius: 25px; text-decoration: none; font-weight: bold; margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); font-size: 0.95rem;
         }
 
-        /* Menggunakan Object Element untuk menembus pemblokiran iframe Canva */
-        .canva-object { 
-            width: 100%; 
-            height: 100%; 
-            border: none; 
-        }
-
-        .fade-out { 
-            opacity: 0; 
-            visibility: hidden; 
-            pointer-events: none; 
-        }
-
-        @media (min-width: 768px) {
-            .greeting-text { font-size: 1.2rem; }
-            .label-text { font-size: 1.5rem; }
-            #guest-name { font-size: 2rem; }
-            .visible-btn { padding: 15px 45px; font-size: 1.3rem; }
+        /* IFRAME KOTAK KOMENTAR GRATIS (CUSDIS/COMMENTO) */
+        .comment-box-area {
+            width: 100%; min-height: 250px; border: none; margin-top: 15px;
+            background-color: #fdfdfd; border-radius: 10px; padding: 10px; box-sizing: border-box;
         }
     </style>
 </head>
 <body>
 
-    <div id="cover-layer">
-        <div class="guest-container">
-            <p class="greeting-text">Kepada Yth:</p>
-            <p class="label-text">Bapak/Ibu/Saudara/i:</p>
-            <h1 id="guest-name">Tamu Undangan</h1>
+    <div class="app-container">
+
+        <div id="cover-layer">
+            <div class="guest-box">
+                <p class="greeting-text">Kepada Yth:</p>
+                <p class="label-text">Bapak/Ibu/Saudara/i:</p>
+                <h1 id="guest-name">Tamu Undangan</h1>
+            </div>
+            <button onclick="bukaUndanganResmi()" class="btn-open">Buka Undangan</button>
+            <img src="cover.png" class="img-cover" alt="Cover Depan">
         </div>
-        
-        <button onclick="bukaUndangan()" class="visible-btn">Buka Undangan</button>
-        <img src="cover.png" class="img-cover" alt="Cover Depan">
+
+        <div id="main-content">
+            
+            <div class="section-block">
+                <img src="foto-wedding.png" data-aos="zoom-in" data-aos-duration="1200" class="content-image decor-photo" alt="Foto Pasangan">
+            </div>
+
+            <div class="section-block">
+                <img src="teks-acara.png" data-aos="fade-up" data-aos-duration="1000" class="content-image" alt="Detail Waktu Acara">
+            </div>
+
+            <div class="section-block">
+                <img src="peta-lokasi.png" data-aos="fade-up" data-aos-duration="1000" class="content-image" alt="Denah Lokasi">
+                
+                <div class="interactive-card" data-aos="fade-up">
+                    <h2 class="section-title">Konfirmasi Kehadiran</h2>
+                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 20px;">Mohon konfirmasikan kehadiran Anda melalui tautan di bawah ini:</p>
+                    <a href="https://wa.me/628123456789?text=Halo+Dhigna+%26+Wildan,+Saya+mengonfirmasi+akan+hadir+di+acara+pernikahan+Anda." target="_blank" class="btn-whatsapp">
+                        💬 Konfirmasi via WhatsApp
+                    </a>
+                </div>
+
+                <div class="interactive-card" data-aos="fade-up">
+                    <h2 class="section-title">Ucapan & Doa Restu</h2>
+                    <div id="cusdis_thread" 
+                         data-host="https://cusdis.com"
+                         data-app-id="9fa17ec3-2db7-49f9-ba7a-977ba7ff3be5" data-page-id="undangan_dhigna_wildan"
+                         data-page-url="window.location.href"
+                         data-page-title="Undangan Pernikahan">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
     </div>
 
-    <div id="content-layer">
-        <object data="https://osmaneter.my.canva.site/dhigna-wildan" class="canva-object"></object>
-    </div>
-
-    <audio id="bg-music" loop>
+    <audio id="wedding-audio" loop>
         <source src="music.mpeg" type="audio/mpeg">
     </audio>
 
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
+    
     <script>
-        // 1. Ambil Nama Tamu dari parameter URL
+        // 1. Ambil Nama Tamu Dinamis dari Link WhatsApp (?to=Nama+Tamu)
         const urlParams = new URLSearchParams(window.location.search);
         const name = urlParams.get('to');
         if (name) { 
             document.getElementById('guest-name').innerText = decodeURIComponent(name.replace(/\+/g, ' ')); 
         }
 
-        // 2. Eksekusi Tombol Buka Undangan
-        function bukaUndangan() {
-            var audio = document.getElementById("bg-music");
-            
-            // Mengaktifkan music.mpeg di GitHub secara instan berkat klik tombol dari tamu
+        // 2. Fungsi Utama Buka Undangan (Trigger Musik + Slide Up Cover)
+        function bukaUndanganResmi() {
+            // Putar file music.mpeg secara instan di latar belakang
+            var audio = document.getElementById("wedding-audio");
             audio.play().catch(function(error) {
-                console.log("Izin audio otomatis aktif.");
+                console.log("Proteksi otomatis browser dilewati.");
             });
-
-            // Membuka lapisan cover depan, memperlihatkan Canva interaktif yang sudah stand-by di bawahnya
-            document.getElementById("cover-layer").classList.add("fade-out");
+            
+            // Angkat cover depan ke atas (Slide Out Up)
+            document.getElementById("cover-layer").classList.add("slide-out-up");
+            
+            // Inisialisasi Pustaka Animasi AOS setelah cover terbuka
+            AOS.init({
+                once: true, // Animasi hanya berjalan sekali saat di-scroll ke bawah
+            });
+            
+            // Mengizinkan halaman isi untuk mulai di-scroll
+            document.getElementById("main-content").style.overflowY = "auto";
         }
+
+        // Kunci posisi scroll awal saat cover depan masih aktif
+        window.onload = function() {
+            window.scrollTo(0, 0);
+        };
     </script>
 </body>
 </html>
