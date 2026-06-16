@@ -5,15 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Undangan Pernikahan Dhigna & Wildan</title>
     <style>
-        html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: 'serif'; background-color: #ffffff; }
+        html, body { 
+            margin: 0; 
+            padding: 0; 
+            height: 100%; 
+            width: 100%; 
+            overflow: hidden; 
+            font-family: sans-serif; 
+            background-color: #ffffff; 
+        }
 
-        #cover-layer { position: relative; width: 100%; height: 100%; }
-        .img-cover { width: 100%; height: 100%; object-fit: cover; display: block; }
+        /* CONTAINER UTAMA COVER */
+        #cover-layer { 
+            position: relative; 
+            width: 100%; 
+            height: 100%; 
+        }
 
-        /* CONTAINER NAMA & SAPAAN */
+        .img-cover { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            display: block; 
+        }
+
+        /* SUSUNAN TEKS NAMA TAMU (RESPONSIF) */
         .guest-container { 
             position: absolute; 
-            top: 55%; 
+            top: 55%; /* Naik/turunkan persentase ini untuk mengatur posisi teks nama */
             left: 50%; 
             transform: translate(-50%, -50%); 
             text-align: center; 
@@ -22,34 +41,38 @@
             z-index: 2;
         }
 
-        .greeting-text { font-size: 4vw; color: #555; margin: 0; font-style: italic; }
-        .label-text { font-size: 5vw; color: #555; margin: 0; font-weight: bold; }
-        #guest-name { font-size: 6vw; color: #8a7355; margin: 5px 0 0 0; font-weight: bold; }
+        .greeting-text { font-size: 4vw; color: #555555; margin: 0; font-style: italic; }
+        .label-text { font-size: 5vw; color: #555555; margin: 0; font-weight: bold; }
+        #guest-name { font-size: 6vw; color: #8a7355; margin: 5px 0 0 0; font-weight: bold; font-family: serif; }
 
         /* TOMBOL BUKA UNDANGAN */
         .visible-btn { 
             position: absolute; 
-            top: 75%; 
+            top: 75%; /* Naik/turunkan persentase ini untuk mengatur posisi tombol */
             left: 50%; 
             transform: translate(-50%, -50%); 
             z-index: 3;
-            padding: 12px 30px;
-            font-size: 1.2rem;
+            padding: 12px 35px;
+            font-size: 1.1rem;
             color: #ffffff;
             background-color: #8a7355; 
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            transition: transform 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            font-weight: bold;
+            transition: all 0.2s ease;
         }
-        .visible-btn:active { transform: translate(-50%, -50%) scale(0.95); }
+        
+        .visible-btn:active {
+            transform: translate(-50%, -50%) scale(0.95);
+        }
 
         @media (min-width: 768px) {
             .greeting-text { font-size: 1.2rem; }
             .label-text { font-size: 1.5rem; }
             #guest-name { font-size: 2rem; }
-            .visible-btn { padding: 15px 40px; font-size: 1.5rem; }
+            .visible-btn { padding: 15px 45px; font-size: 1.3rem; }
         }
     </style>
 </head>
@@ -62,36 +85,64 @@
             <h1 id="guest-name">Tamu Undangan</h1>
         </div>
         
-        <button onclick="bukaUndanganCanva()" class="visible-btn">Buka Undangan</button>
+        <!-- Memicu fungsi buka undangan di halaman yang sama -->
+        <button onclick="bukaUndanganSamaPage()" class="visible-btn">Buka Undangan</button>
         
-        <img src="cover.jpg" class="img-cover" alt="Cover Depan">
+        <!-- Pastikan file gambar Anda di GitHub bernama cover.png -->
+        <img src="cover.png" class="img-cover" alt="Cover Depan">
     </div>
 
+    <!-- AUDIO BACKEND GITHUB -->
     <audio id="bg-music" loop>
         <source src="music.mpeg" type="audio/mpeg">
     </audio>
 
     <script>
-        // 1. Ambil nama dari URL
+        // ==========================================
+        // 1. SCRIPT LOGIKA PENANGKAP NAMA (ANTI-POTONG)
+        // ==========================================
         const urlParams = new URLSearchParams(window.location.search);
-        const name = urlParams.get('to');
-        if (name) { 
-            document.getElementById('guest-name').innerText = decodeURIComponent(name.replace(/\+/g, ' ')); 
+        let guestName = urlParams.get('to');
+
+        // Jika parameter ?to= kosong (karena dipotong shortener), baca dari ujung URL Path (/)
+        if (!guestName) {
+            const fullPath = window.location.pathname; 
+            const pathSegments = fullPath.split('/').filter(segment => segment.length > 0);
+            
+            if (pathSegments.length > 0) {
+                const lastSegment = pathSegments[pathSegments.length - 1];
+                
+                // Filter agar tidak salah membaca nama file repositori bawaan GitHub
+                if (lastSegment !== 'index.html' && lastSegment !== 'undangan' && lastSegment !== 'wildanalfa.github.io') {
+                    guestName = lastSegment;
+                }
+            }
         }
 
-        // 2. Putar musik otomatis saat layar disentuh pertama kali
-        window.addEventListener('click', function() {
-            var audio = document.getElementById("bg-music");
-            if (audio.paused) {
-                audio.play().catch(function(error) {
-                    console.log("Autoplay memerlukan interaksi pengguna.");
-                });
-            }
-        }, { once: true });
+        // Tampilkan nama ke layar sampul depan
+        if (guestName) {
+            let decodedName = decodeURIComponent(guestName.replace(/\+/g, ' '));
+            document.getElementById('guest-name').innerText = decodedName;
+        } else {
+            document.getElementById('guest-name').innerText = "Tamu Undangan";
+        }
 
-        // 3. Fungsi pindah ke Canva
-        function bukaUndanganCanva() {
-            window.location.href = "https://osmaneter.my.canva.site/dhigna-wildan";
+
+        // ==========================================
+        // 2. FUNGSI TRANSISI PINDAH KE CANVA (SAME PAGE)
+        // ==========================================
+        function bukaUndanganSamaPage() {
+            var audio = document.getElementById("bg-music");
+            
+            // Putar audio sepersekian detik untuk memicu izin audio browser
+            audio.play().catch(function(error) {
+                console.log("Audio trigger aktif.");
+            });
+
+            // Berpindah ke web Canva interaktif di halaman yang sama tanpa tab baru
+            setTimeout(function() {
+                window.location.href = "https://osmaneter.my.canva.site/dhigna-wildan";
+            }, 300); // Delay murni 0.3 detik agar browser sempat memproses suara & transisi terasa halus
         }
     </script>
 </body>
