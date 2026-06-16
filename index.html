@@ -148,35 +148,44 @@
 
         const audio = document.getElementById("bg-music");
 
+       // ====================================================================
+        // 1. AUTOPLAY BYPASS: Langsung Unmute Begitu Ada Deteksi Sentuhan/Scroll Pertama
         // ====================================================================
-        // STRATEGI Lolos Autoplay: Unmute Otomatis Begitu Ada Sentuhan Pertama di Layar
-        // ====================================================================
-        function aktifkanSuaraOtomatis() {
-            audio.muted = false; // Matikan mode senyap
-            // Coba paksa putar jika seandainya browser sempat menahan jalurnya
-            audio.play().catch(function(error) {
-                console.log("Menunggu interaksi fisik penuh.");
-            });
-            
-            // Hapus event listener agar fungsi ini tidak berjalan berulang-ulang setiap kali layar disentuh
-            document.removeEventListener('click', aktifkanSuaraOtomatis);
-            document.removeEventListener('touchstart', aktifkanSuaraOtomatis);
+        function triggerAudioUnmute() {
+            if (audio.muted) {
+                audio.muted = false;
+                audio.volume = 1.0; // Setel volume maksimal di awal
+                audio.play().catch(err => console.log("Menunggu interaksi pengguna"));
+            }
+            // Hapus listener setelah suara berhasil dipicu sekali
+            window.removeEventListener('touchstart', triggerAudioUnmute);
+            window.removeEventListener('click', triggerAudioUnmute);
+            window.removeEventListener('scroll', triggerAudioUnmute);
         }
 
-        // Daftarkan detektor sentuhan pada layar HP / Klik Mouse PC tamu
-        document.addEventListener('click', aktifkanSuaraOtomatis);
-        document.addEventListener('touchstart', aktifkanSuaraOtomatis);
+        // Pasang sensor deteksi gerakan pada browser global tamu
+        window.addEventListener('touchstart', triggerAudioUnmute, { passive: true });
+        window.addEventListener('click', triggerAudioUnmute);
+        window.addEventListener('scroll', triggerAudioUnmute, { passive: true });
 
 
         // ====================================================================
-        // FUNGSI TOMBOL BUKA UNDANGAN
+        // 2. FUNGSI BUTTON + LOGIKA FADE OUT (VOLUME MENGECIL PERLAHAN)
         // ====================================================================
         function bukaUndanganSamaPage() {
-            // Pastikan audio menyala dan tidak senyap saat tombol diklik
+            // Pastikan audio menyala dan bersuara saat tombol diklik
             audio.muted = false;
-            audio.play().catch(function(error) {
-                console.log("Audio diizinkan.");
-            });
+            audio.play().catch(() => {});
+
+            // Interval untuk menurunkan volume setiap 50 milidetik (Fade Out selama ~600ms)
+            const fadeAudio = setInterval(function () {
+                // Turunkan volume secara bertahap sebesar 0.1 angka
+                if (audio.volume > 0.1) {
+                    audio.volume -= 0.1;
+                } else {
+                    // Ketika volume sudah mendekati nol, hentikan interval dan matikan lagu sepenuhnya
+                    clearInterval(fadeAudio);
+                    audio.pause();
 
             setTimeout(function() {
                 window.location.href = "https://osmaneter.my.canva.site/dhigna-wildan";
