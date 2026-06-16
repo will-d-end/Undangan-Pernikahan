@@ -27,16 +27,16 @@
             align-items: center;
         }
 
-       .img-cover { 
-            /* Mengunci dimensi maksimal agar selalu tersisa ruang 10% (margin sekeliling) */
-            max-width: 90%; 
-            max-height: 90vh; 
-            width: auto;
-            height: auto;
-            object-fit: contain; /* Menjamin gambar pas satu bingkai penuh tanpa terpotong */
+        /* GAMBAR BACKGROUND YANG MEMENUHI SELURUH LAYAR MONITOR PC (ANTI-TERPOTONG / BINGKAI HITAM) */
+        .img-cover { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; /* Gambar otomatis re-scale menyesuaikan rasio PC / HP tanpa merusak aspek rasio asli */
+            position: absolute;
+            top: 0;
+            left: 0;
             z-index: 1;
-            border-radius: 12px; /* Memberikan sudut melengkung halus pada gambar cover */
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Dimensi bayangan agar cover terlihat mengambang */
+        }
 
         /* 2. AREA INTERAKTIF DI TENGAH BAWAH (Dinamis Menyesuaikan Lebar PC vs HP) */
         .content-overlay {
@@ -119,7 +119,7 @@
     <div id="cover-layer">
         
         <!-- Background gambar penuh menyapu seluruh monitor PC atau layar HP Anda -->
-        <img src="cover.svg" class="img-cover" alt="Cover Depan">
+        <img src="cover.png" class="img-cover" alt="Cover Depan">
         
         <!-- Blok Konten Teks Nama dan Tombol di Tengah Bawah -->
         <div class="content-overlay">
