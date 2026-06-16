@@ -85,10 +85,7 @@
             <h1 id="guest-name">Tamu Undangan</h1>
         </div>
         
-        <!-- Memicu fungsi buka undangan di halaman yang sama -->
         <button onclick="bukaUndanganSamaPage()" class="visible-btn">Buka Undangan</button>
-        
-        <!-- Pastikan file gambar Anda di GitHub bernama cover.png -->
         <img src="cover.png" class="img-cover" alt="Cover Depan">
     </div>
 
@@ -98,13 +95,13 @@
     </audio>
 
     <script>
-        // ==========================================
-        // 1. SCRIPT LOGIKA PENANGKAP NAMA (ANTI-POTONG)
-        // ==========================================
+        // ====================================================================
+        // 1. LOGIKA PENANGKAP NAMA ANTI-POTONG (SPESIFIK UTK REPO SPASI)
+        // ====================================================================
         const urlParams = new URLSearchParams(window.location.search);
         let guestName = urlParams.get('to');
 
-        // Jika parameter ?to= kosong (karena dipotong shortener), baca dari ujung URL Path (/)
+        // Jika parameter ?to= kosong, lakukan ekstraksi dari URL Path (/)
         if (!guestName) {
             const fullPath = window.location.pathname; 
             const pathSegments = fullPath.split('/').filter(segment => segment.length > 0);
@@ -112,14 +109,23 @@
             if (pathSegments.length > 0) {
                 const lastSegment = pathSegments[pathSegments.length - 1];
                 
-                // Filter agar tidak salah membaca nama file repositori bawaan GitHub
-                if (lastSegment !== 'index.html' && lastSegment !== 'undangan' && lastSegment !== 'wildanalfa.github.io') {
+                // Daftar proteksi kata kunci sistem agar nama repo & akun tidak terbaca sebagai nama tamu
+                const systemKeywords = [
+                    'index.html', 
+                    'will-d-end', 
+                    'will-d-end.github.io', 
+                    'undangan pernikahan', 
+                    'undangan%20pernikahan'
+                ];
+                
+                // Jika teks terakhir bukan bagian dari kata kunci sistem, berarti itu adalah nama tamu
+                if (!systemKeywords.includes(decodeURIComponent(lastSegment.toLowerCase()))) {
                     guestName = lastSegment;
                 }
             }
         }
 
-        // Tampilkan nama ke layar sampul depan
+        // Cetak nama tamu ke layar cover depan secara rapi
         if (guestName) {
             let decodedName = decodeURIComponent(guestName.replace(/\+/g, ' '));
             document.getElementById('guest-name').innerText = decodedName;
@@ -127,22 +133,21 @@
             document.getElementById('guest-name').innerText = "Tamu Undangan";
         }
 
-
-        // ==========================================
+        // ====================================================================
         // 2. FUNGSI TRANSISI PINDAH KE CANVA (SAME PAGE)
-        // ==========================================
+        // ====================================================================
         function bukaUndanganSamaPage() {
             var audio = document.getElementById("bg-music");
             
-            // Putar audio sepersekian detik untuk memicu izin audio browser
+            // Putar musik mpeg di latar belakang sesaat untuk memicu izin browser
             audio.play().catch(function(error) {
-                console.log("Audio trigger aktif.");
+                console.log("Audio browser bypass log.");
             });
 
-            // Berpindah ke web Canva interaktif di halaman yang sama tanpa tab baru
+            // Alihkan halaman ke alamat Canva Website interaktif asli Anda
             setTimeout(function() {
                 window.location.href = "https://osmaneter.my.canva.site/dhigna-wildan";
-            }, 300); // Delay murni 0.3 detik agar browser sempat memproses suara & transisi terasa halus
+            }, 300);
         }
     </script>
 </body>
