@@ -66,7 +66,7 @@
             border: 1px solid rgba(255, 255, 255, 0.4);
         }
 
-        /* FLUID TYPOGRAPHY (Ukuran huruf yang adaptif menggunakan satuan tinggi layar vh/viewport height) */
+        /* FLUID TYPOGRAPHY */
         .greeting-text { 
             font-size: clamp(0.75rem, 2vh, 0.95rem); 
             color: rgba(85, 85, 85, 0.8); 
@@ -118,10 +118,8 @@
 
     <div id="cover-layer">
         
-        <!-- Background gambar penuh menyapu seluruh monitor PC atau layar HP Anda -->
         <img src="cover.svg" class="img-cover" alt="Cover Depan">
         
-        <!-- Blok Konten Teks Nama dan Tombol di Tengah Bawah -->
         <div class="content-overlay">
             <div class="guest-container">
                 <p class="greeting-text">Kepada Yth:</p>
@@ -133,23 +131,17 @@
 
     </div>
 
-    <!-- AUDIO UTAMA -->
-    <audio id="bg-music" loop>
-        <source src="music.mpeg" type="audio/mpeg">
-    </audio>
-
     <script>
-        // Membaca parameter tautan nama tamu (?to=Nama+Tamu)
+        // 1. Membaca parameter nama tamu (?to=Nama+Tamu) dari link WhatsApp
         const urlParams = new URLSearchParams(window.location.search);
         const name = urlParams.get('to');
         if (name) { 
             document.getElementById('guest-name').innerText = decodeURIComponent(name.replace(/\+/g, ' ')); 
         }
 
-        // Jalankan transisi halaman
+        // 2. Fungsi Tombol: Langsung mengalihkan halaman ke Canva secara instan
         function bukaUndanganSamaPage() {
-                window.location.href = "https://will-d-end.my.canva.site/dhigna-wildan";
-            }, 300);
+            window.location.href = "https://will-d-end.my.canva.site/dhigna-wildan";
         }
     </script>
 </body>
