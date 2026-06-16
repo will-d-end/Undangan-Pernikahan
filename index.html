@@ -5,101 +5,178 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Undangan Pernikahan Dhigna & Wildan</title>
     <style>
+        /* 1. RESET BASE & LOCK OVERFLOW */
         html, body { 
             margin: 0; 
             padding: 0; 
             height: 100%; 
             width: 100%; 
             overflow: hidden; 
-            font-family: sans-serif; 
-            background-color: #ffffff; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background-color: #1a1a1a; /* Background dasar gelap untuk efek bingkai di PC */
         }
 
+        /* 2. DYNAMIC WRAPPER (RESPONSIF MOBILE-FIRST) */
+        .viewport-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 500px; /* Batas lebar maksimal agar desain tidak rusak/melebar di tablet/PC */
+            height: 100%;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        /* CONTAINER UTAMA LAYER COVER */
         #cover-layer { 
-            position: relative; 
+            position: absolute; 
+            top: 0;
+            left: 0;
             width: 100%; 
             height: 100%; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
         }
 
+        /* GAMBAR COVER AUTO-SCALE MENGIKUTI BINGKAI LAYAR HP */
         .img-cover { 
             width: 100%; 
             height: 100%; 
             object-fit: cover; 
-            display: block; 
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
         }
 
+        /* 3. DYNAMIC BOX NAMA TAMU (AUTO-SCALE BOX) */
         .guest-container { 
             position: absolute; 
-            top: 80%; 
+            top: 55%; /* Mengatur letak vertikal box di tengah layar */
             left: 50%; 
             transform: translate(-50%, -50%); 
             text-align: center; 
-            // background-color: #91a95f60;
-            width: 55%; 
-            pointer-events: none; 
             z-index: 2;
+            pointer-events: none; 
+            
+            /* Menggunakan clamp agar lebar kotak mengecil di HP kecil dan melebar proporsional di HP besar */
+            width: clamp(260px, 80%, 400px); 
+            
+            /* Padding dinamis menggunakan satuan viewport minimum (vmin) */
+            padding: clamp(15px, 5vmin, 30px) clamp(10px, 3vmin, 20px); 
+            box-sizing: border-box;
+
+            /* KODE TRANSPARANSI BOX PUTIH (Aset murni lewat kode) */
+            background-color: rgba(255, 255, 255, 0.75); 
+            border-radius: clamp(10px, 3vmin, 20px); /* Kelengkungan sudut yang ikut mengecil/membesar */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
-        .greeting-text { font-size: 12vw; color: #f7f4ea; margin: 0; font-style: italic; }
-        .label-text { font-size: 12vw; color: #f7f4ea; margin: 0; font-weight: bold; }
-        #guest-name { font-size: 6vw; color: #f4efe1; margin: 5px 0 0 0; font-weight: bold; font-family: serif; }
+        /* 4. FLUID TYPOGRAPHY (Ukuran Huruf Otomatis Menyesuaikan Layar Tanpa Pecah) */
+        /* Rumus clamp(BatasanMinimal, UkuranIdealMenyesuaikanLayar, BatasanMaksimal) */
+        .greeting-text { 
+            font-size: clamp(0.75rem, 3.5vw, 1rem); 
+            color: #f6f2e7; 
+            margin: 0; 
+            font-style: italic; 
+        }
+        
+        .label-text { 
+            font-size: clamp(0.85rem, 4vw, 1.1rem); 
+            color: #f6f2e7; 
+            margin: 3px 0 0 0; 
+            font-weight: bold; 
+        }
+        
+        #guest-name { 
+            font-size: clamp(1.2rem, 5.5vw, 1.75rem); 
+            color: #f4efe1; 
+            margin: clamp(5px, 2vmin, 12px) 0 0 0; 
+            font-weight: bold; 
+            font-family: 'Georgia', serif;
+            line-height: 1.3;
+            word-break: break-word; /* Mencegah nama tamu yang panjang terpotong keluar dari box */
+        }
 
+        /* 5. DYNAMIC BUTTON (AUTO-SCALE TOMBOL) */
         .visible-btn { 
             position: absolute; 
-            top: 90%; 
+            top: 75%; /* Mengatur letak vertikal tombol */
             left: 50%; 
             transform: translate(-50%, -50%); 
             z-index: 3;
-            padding: 12px 35px;
-            font-size: 1.1rem;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
             color: #ffffff;
             background-color: #8a7355; 
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            font-weight: bold;
+            
+            /* Skala ukuran tombol dan teks di dalamnya otomatis membesar/mengecil mengikuti HP */
+            font-size: clamp(0.9rem, 4vw, 1.1rem);
+            padding: clamp(10px, 2.5vmin, 15px) clamp(25px, 7vw, 45px);
+            border-radius: clamp(20px, 5vmin, 30px);
+            
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: background-color 0.2s ease, transform 0.1s ease;
         }
-
-        @media (min-width: 768px) {
-            .greeting-text { font-size: 1.3rem; }
-            .label-text { font-size: 1.5rem; }
-            #guest-name { font-size: 2rem; }
-            .visible-btn { padding: 15px 45px; font-size: 1.3rem; }
+        
+        /* Efek sentuhan responsif di layar HP */
+        .visible-btn:active {
+            transform: translate(-50%, -50%) scale(0.95);
+            background-color: #735f44;
         }
     </style>
 </head>
 <body>
 
-    <div id="cover-layer">
-        <div class="guest-container">
-            <p class="greeting-text">Kepada Yth:</p>
-            <p class="label-text">Bapak/Ibu/Saudara/i:</p>
-            <h1 id="guest-name">Tamu Undangan</h1>
+    <!-- PEMBUNGKUS DYNAMIC VIEWPORT -->
+    <div class="viewport-wrapper">
+
+        <div id="cover-layer">
+            <!-- Box Teks Nama Tamu (Skala Otomatis + Transparan) -->
+            <div class="guest-container">
+                <p class="greeting-text">Kepada Yth:</p>
+                <p class="label-text">Bapak/Ibu/Saudara/i:</p>
+                <h1 id="guest-name">Tamu Undangan</h1>
+            </div>
+            
+            <!-- Tombol Buka Undangan (Skala Otomatis) -->
+            <button onclick="bukaUndanganSamaPage()" class="visible-btn">Buka Undangan</button>
+            
+            <!-- Gambar Cover Belakang -->
+            <img src="cover.svg" class="img-cover" alt="Cover Depan">
         </div>
-        
-        <button onclick="bukaUndanganSamaPage()" class="visible-btn">Buka Undangan</button>
-        <img src="cover.svg" class="img-cover" alt="Cover Depan">
+
     </div>
 
+    <!-- AUDIO BACKEND GITHUB -->
     <audio id="bg-music" loop>
         <source src="music.mpeg" type="audio/mpeg">
     </audio>
 
     <script>
-        // Membaca parameter standar ?to= secara instan dan akurat
+        // Membaca parameter ?to= dari URL WhatsApp secara akurat
         const urlParams = new URLSearchParams(window.location.search);
         const name = urlParams.get('to');
         if (name) { 
             document.getElementById('guest-name').innerText = decodeURIComponent(name.replace(/\+/g, ' ')); 
         }
 
+        // Fungsi Perpindahan Halaman di Tab yang Sama
         function bukaUndanganSamaPage() {
             var audio = document.getElementById("bg-music");
+            
+            // Trigger audio mpeg sesaat agar browser meloloskan izin musik
             audio.play().catch(function(error) {
-                console.log("Audio didukung.");
+                console.log("Audio bypass secured.");
             });
 
+            // Alihkan ke link Canva eksternal di halaman yang sama tanpa buka tab baru
             setTimeout(function() {
                 window.location.href = "https://osmaneter.my.canva.site/dhigna-wildan";
             }, 300);
