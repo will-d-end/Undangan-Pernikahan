@@ -147,11 +147,7 @@
         }
 
         // Jalankan transisi halaman
-        function bukaUndanganSamaPage() {
-            var audio = document.getElementById("bg-music");
-            audio.play().catch(function(error) {
-                console.log("Audio play allowed.");
-            });
+        const audio = document.getElementById("bg-music");
 
             setTimeout(function() {
                 window.location.href = "https://osmaneter.my.canva.site/dhigna-wildan";
