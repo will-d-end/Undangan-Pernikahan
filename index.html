@@ -146,8 +146,37 @@
             document.getElementById('guest-name').innerText = decodeURIComponent(name.replace(/\+/g, ' ')); 
         }
 
-        // Jalankan transisi halaman
         const audio = document.getElementById("bg-music");
+
+        // ====================================================================
+        // STRATEGI Lolos Autoplay: Unmute Otomatis Begitu Ada Sentuhan Pertama di Layar
+        // ====================================================================
+        function aktifkanSuaraOtomatis() {
+            audio.muted = false; // Matikan mode senyap
+            // Coba paksa putar jika seandainya browser sempat menahan jalurnya
+            audio.play().catch(function(error) {
+                console.log("Menunggu interaksi fisik penuh.");
+            });
+            
+            // Hapus event listener agar fungsi ini tidak berjalan berulang-ulang setiap kali layar disentuh
+            document.removeEventListener('click', aktifkanSuaraOtomatis);
+            document.removeEventListener('touchstart', aktifkanSuaraOtomatis);
+        }
+
+        // Daftarkan detektor sentuhan pada layar HP / Klik Mouse PC tamu
+        document.addEventListener('click', aktifkanSuaraOtomatis);
+        document.addEventListener('touchstart', aktifkanSuaraOtomatis);
+
+
+        // ====================================================================
+        // FUNGSI TOMBOL BUKA UNDANGAN
+        // ====================================================================
+        function bukaUndanganSamaPage() {
+            // Pastikan audio menyala dan tidak senyap saat tombol diklik
+            audio.muted = false;
+            audio.play().catch(function(error) {
+                console.log("Audio diizinkan.");
+            });
 
             setTimeout(function() {
                 window.location.href = "https://osmaneter.my.canva.site/dhigna-wildan";
