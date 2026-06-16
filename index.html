@@ -15,7 +15,6 @@
             background-color: #ffffff; 
         }
 
-        /* CONTAINER UTAMA COVER */
         #cover-layer { 
             position: relative; 
             width: 100%; 
@@ -29,10 +28,9 @@
             display: block; 
         }
 
-        /* SUSUNAN TEKS NAMA TAMU (RESPONSIF) */
         .guest-container { 
             position: absolute; 
-            top: 55%; /* Naik/turunkan persentase ini untuk mengatur posisi teks nama */
+            top: 55%; 
             left: 50%; 
             transform: translate(-50%, -50%); 
             text-align: center; 
@@ -45,10 +43,9 @@
         .label-text { font-size: 5vw; color: #555555; margin: 0; font-weight: bold; }
         #guest-name { font-size: 6vw; color: #8a7355; margin: 5px 0 0 0; font-weight: bold; font-family: serif; }
 
-        /* TOMBOL BUKA UNDANGAN */
         .visible-btn { 
             position: absolute; 
-            top: 75%; /* Naik/turunkan persentase ini untuk mengatur posisi tombol */
+            top: 75%; 
             left: 50%; 
             transform: translate(-50%, -50%); 
             z-index: 3;
@@ -61,11 +58,6 @@
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             font-weight: bold;
-            transition: all 0.2s ease;
-        }
-        
-        .visible-btn:active {
-            transform: translate(-50%, -50%) scale(0.95);
         }
 
         @media (min-width: 768px) {
@@ -89,53 +81,24 @@
         <img src="cover.png" class="img-cover" alt="Cover Depan">
     </div>
 
-    <!-- AUDIO BACKEND GITHUB -->
     <audio id="bg-music" loop>
         <source src="music.mpeg" type="audio/mpeg">
     </audio>
 
     <script>
-        // ====================================================================
-        // 1. SCRIPT DETEKSI NAMA TAMU BERBASIS TANDA PAGAR (#) - ANTI-FAIL
-        // ====================================================================
-        function dapatkanNamaTamu() {
-            // Pertama, coba cek metode standar (?to=) jika ada
-            const urlParams = new URLSearchParams(window.location.search);
-            let name = urlParams.get('to');
-
-            // Jika kosong (karena dipotong shortener), ambil teks setelah tanda pagar (#)
-            if (!name && window.location.hash) {
-                // window.location.hash mengambil contoh: "#Bagus+Nugroho"
-                // .substring(1) digunakan untuk membuang karakter "#" di depan nama
-                name = window.location.hash.substring(1);
-            }
-
-            return name;
+        // Membaca parameter standar ?to= secara instan dan akurat
+        const urlParams = new URLSearchParams(window.location.search);
+        const name = urlParams.get('to');
+        if (name) { 
+            document.getElementById('guest-name').innerText = decodeURIComponent(name.replace(/\+/g, ' ')); 
         }
 
-        // Jalankan pencarian nama saat halaman terbuka
-        const namaTerdeteksi = dapatkanNamaTamu();
-
-        if (namaTerdeteksi) {
-            // Bersihkan karakter plus (+) atau %20 menjadi spasi normal kembali
-            let namaBersih = decodeURIComponent(namaTerdeteksi.replace(/\+/g, ' '));
-            document.getElementById('guest-name').innerText = namaBersih;
-        } else {
-            document.getElementById('guest-name').innerText = "Tamu Undangan";
-        }
-
-        // ====================================================================
-        // 2. FUNGSI TRANSISI PINDAH KE CANVA (SAME PAGE)
-        // ====================================================================
         function bukaUndanganSamaPage() {
             var audio = document.getElementById("bg-music");
-            
-            // Putar musik mpeg di latar belakang
             audio.play().catch(function(error) {
-                console.log("Musik diizinkan.");
+                console.log("Audio didukung.");
             });
 
-            // Alihkan halaman secara langsung ke Canva di tab yang sama
             setTimeout(function() {
                 window.location.href = "https://osmaneter.my.canva.site/dhigna-wildan";
             }, 300);
