@@ -96,39 +96,30 @@
 
     <script>
         // ====================================================================
-        // 1. LOGIKA PENANGKAP NAMA ANTI-POTONG (SPESIFIK UTK REPO SPASI)
+        // 1. SCRIPT DETEKSI NAMA TAMU BERBASIS TANDA PAGAR (#) - ANTI-FAIL
         // ====================================================================
-        const urlParams = new URLSearchParams(window.location.search);
-        let guestName = urlParams.get('to');
+        function dapatkanNamaTamu() {
+            // Pertama, coba cek metode standar (?to=) jika ada
+            const urlParams = new URLSearchParams(window.location.search);
+            let name = urlParams.get('to');
 
-        // Jika parameter ?to= kosong, lakukan ekstraksi dari URL Path (/)
-        if (!guestName) {
-            const fullPath = window.location.pathname; 
-            const pathSegments = fullPath.split('/').filter(segment => segment.length > 0);
-            
-            if (pathSegments.length > 0) {
-                const lastSegment = pathSegments[pathSegments.length - 1];
-                
-                // Daftar proteksi kata kunci sistem agar nama repo & akun tidak terbaca sebagai nama tamu
-                const systemKeywords = [
-                    'index.html', 
-                    'will-d-end', 
-                    'will-d-end.github.io', 
-                    'undangan pernikahan', 
-                    'undangan%20pernikahan'
-                ];
-                
-                // Jika teks terakhir bukan bagian dari kata kunci sistem, berarti itu adalah nama tamu
-                if (!systemKeywords.includes(decodeURIComponent(lastSegment.toLowerCase()))) {
-                    guestName = lastSegment;
-                }
+            // Jika kosong (karena dipotong shortener), ambil teks setelah tanda pagar (#)
+            if (!name && window.location.hash) {
+                // window.location.hash mengambil contoh: "#Bagus+Nugroho"
+                // .substring(1) digunakan untuk membuang karakter "#" di depan nama
+                name = window.location.hash.substring(1);
             }
+
+            return name;
         }
 
-        // Cetak nama tamu ke layar cover depan secara rapi
-        if (guestName) {
-            let decodedName = decodeURIComponent(guestName.replace(/\+/g, ' '));
-            document.getElementById('guest-name').innerText = decodedName;
+        // Jalankan pencarian nama saat halaman terbuka
+        const namaTerdeteksi = dapatkanNamaTamu();
+
+        if (namaTerdeteksi) {
+            // Bersihkan karakter plus (+) atau %20 menjadi spasi normal kembali
+            let namaBersih = decodeURIComponent(namaTerdeteksi.replace(/\+/g, ' '));
+            document.getElementById('guest-name').innerText = namaBersih;
         } else {
             document.getElementById('guest-name').innerText = "Tamu Undangan";
         }
@@ -139,12 +130,12 @@
         function bukaUndanganSamaPage() {
             var audio = document.getElementById("bg-music");
             
-            // Putar musik mpeg di latar belakang sesaat untuk memicu izin browser
+            // Putar musik mpeg di latar belakang
             audio.play().catch(function(error) {
-                console.log("Audio browser bypass log.");
+                console.log("Musik diizinkan.");
             });
 
-            // Alihkan halaman ke alamat Canva Website interaktif asli Anda
+            // Alihkan halaman secara langsung ke Canva di tab yang sama
             setTimeout(function() {
                 window.location.href = "https://osmaneter.my.canva.site/dhigna-wildan";
             }, 300);
